@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'number_progress.dart';
@@ -20,7 +21,7 @@ class UpdateDialog {
       double buttonTextSize = 14.0,
       double progress = -1.0,
       Color progressBackgroundColor = const Color(0xFFFFCDD2),
-      Image? topImage,
+      Widget? topImage,
       double extraHeight = 5.0,
       double radius = 4.0,
       Color themeColor = Colors.red,
@@ -29,6 +30,7 @@ class UpdateDialog {
       bool isForce = false,
       String? updateButtonText,
       String? ignoreButtonText,
+      Color? ignoreColor,
       VoidCallback? onClose}) {
     _context = context;
     _widget = UpdateWidget(
@@ -50,6 +52,7 @@ class UpdateDialog {
         isForce: isForce,
         updateButtonText: updateButtonText ?? '更新',
         ignoreButtonText: ignoreButtonText ?? '忽略此版本',
+        ignoreColor: ignoreColor,
         onClose: onClose ?? () => dismiss());
   }
 
@@ -112,7 +115,7 @@ class UpdateDialog {
       double buttonTextSize = 14.0,
       double progress = -1.0,
       Color progressBackgroundColor = const Color(0xFFFFCDD2),
-      Image? topImage,
+      Widget? topImage,
       double extraHeight = 5.0,
       double radius = 4.0,
       Color themeColor = Colors.red,
@@ -120,6 +123,7 @@ class UpdateDialog {
       VoidCallback? onIgnore,
       String? updateButtonText,
       String? ignoreButtonText,
+      Color? ignoreColor,
       bool isForce = false}) {
     final UpdateDialog dialog = UpdateDialog(context,
         width: width,
@@ -139,6 +143,7 @@ class UpdateDialog {
         isForce: isForce,
         updateButtonText: updateButtonText,
         ignoreButtonText: ignoreButtonText,
+        ignoreColor: ignoreColor,
         onIgnore: onIgnore);
     dialog.show();
     return dialog;
@@ -203,6 +208,8 @@ class UpdateWidget extends StatefulWidget {
   /// 忽略按钮内容
   final String ignoreButtonText;
 
+  final Color? ignoreColor;
+
   UpdateWidget(
       {Key? key,
       this.width = 0.0,
@@ -223,6 +230,7 @@ class UpdateWidget extends StatefulWidget {
       this.isForce = false,
       this.updateButtonText = '更新',
       this.ignoreButtonText = '忽略此版本',
+      this.ignoreColor,
       this.onClose})
       : super(key: key);
 
@@ -322,21 +330,13 @@ class _UpdateWidgetState extends State<UpdateWidget> {
                           if (widget.enableIgnore && widget.onIgnore != null)
                             FractionallySizedBox(
                                 widthFactor: 1,
-                                child: TextButton(
-                                  style: ButtonStyle(
-                                    tapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
-                                    textStyle: MaterialStateProperty.all(
-                                        TextStyle(
-                                            fontSize: widget.buttonTextSize)),
-                                    foregroundColor: MaterialStateProperty.all(
-                                        const Color(0xFF666666)),
-                                    shape: MaterialStateProperty.all(
-                                        RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5))),
+                                child: CupertinoButton(
+                                  child: Text(
+                                    widget.ignoreButtonText,
+                                    style: TextStyle(
+                                        fontSize: widget.buttonTextSize,
+                                        color: widget.ignoreColor),
                                   ),
-                                  child: Text(widget.ignoreButtonText),
                                   onPressed: widget.onIgnore,
                                 ))
                           else
